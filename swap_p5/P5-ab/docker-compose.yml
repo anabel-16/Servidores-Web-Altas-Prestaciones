@@ -1,0 +1,19 @@
+services:
+
+
+  #  APACHE BENCHMARK 
+  apache-benchmark-P5:
+    container_name: apache-benchmark-P5
+    build:
+      context: .
+      dockerfile: DockerFileAB  
+    image: anaiperez-ab-image:p5 
+    command: ["tail", "-f", "/dev/null"]
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.60
+
+#  REDES EXTERNAS 
+networks:
+  red_web:
+    external: true

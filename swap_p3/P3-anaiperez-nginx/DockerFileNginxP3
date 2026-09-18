@@ -1,0 +1,10 @@
+FROM nginx:latest
+RUN mkdir -p /etc/nginx/ssl
+
+COPY P3-anaiperez-certificados/certificado_anaiperez.crt /etc/nginx/ssl/certificado_anaiperez.crt
+COPY P3-anaiperez-certificados/certificado_anaiperez.key /etc/nginx/ssl/certificado_anaiperez.key
+
+COPY P3-anaiperez-nginx/anaiperez-nginx-ssl.conf /etc/nginx/nginx.conf
+
+EXPOSE 443
+

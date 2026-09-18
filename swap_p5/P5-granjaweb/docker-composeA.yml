@@ -1,0 +1,68 @@
+version: '3.1'
+
+services:
+  
+  
+#  BASE DE DATOS 
+  bd-cms:
+    image: mysql:8.0
+    container_name: mysql-cms-p5
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    networks:
+      red_servicios:
+        ipv4_address: 192.168.20.50  
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_p5
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: anaiperez_cms
+      MYSQL_PASSWORD: wordpress_password
+
+  # WORDPRESS
+  cms-wordpress-1:
+    image: wordpress:latest
+    container_name: cms-wp-nodo1
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.20  
+      red_servicios:
+        ipv4_address: 192.168.20.20  
+    environment:
+      WORDPRESS_DB_HOST: 192.168.20.50:3306
+      WORDPRESS_DB_USER: anaiperez_cms
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress_db
+    depends_on:
+      - bd-cms
+
+  # WORDPRESS
+  cms-wordpress-2:
+    image: wordpress:latest
+    container_name: cms-wp-nodo2
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.21  
+      red_servicios:
+        ipv4_address: 192.168.20.21  
+    environment:
+      WORDPRESS_DB_HOST: 192.168.20.50:3306
+      WORDPRESS_DB_USER: anaiperez_cms
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress_db
+    depends_on:
+      - bd-cms
+
+# --- REDES EXTERNAS ---
+networks:
+  red_web:
+    external: true
+  red_servicios:
+    external: true

@@ -1,0 +1,22 @@
+FROM anaiperez-apache-image:p1
+
+RUN a2enmod ssl \
+    && a2ensite default-ssl \
+    && mkdir /etc/apache2/ssl
+
+
+COPY P3-anaiperez-certificados/certificado_anaiperez_bundle.crt /etc/apache2/ssl/certificado_anaiperez_bundle.crt
+
+COPY P3-anaiperez-certificados/certificado_anaiperez.key /etc/apache2/ssl/certificado_anaiperez.key
+
+RUN chmod 600 /etc/apache2/ssl/certificado_anaiperez.key
+RUN chmod 644 /etc/apache2/ssl/certificado_anaiperez_bundle.crt
+
+RUN echo $(ls -l)
+
+COPY P3-anaiperez-apache/anaiperez-apache-ssl.conf /etc/apache2/sites-available/anaiperez-apache-ssl.conf
+
+RUN a2ensite anaiperez-apache-ssl.conf && a2dissite default-ssl
+
+
+EXPOSE 443

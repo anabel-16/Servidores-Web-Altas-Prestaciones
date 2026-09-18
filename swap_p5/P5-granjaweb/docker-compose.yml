@@ -1,0 +1,185 @@
+version: '3.1'
+
+services:
+
+  # --- BALANCEADOR NGINX ---
+  balanceador-nginx:
+    container_name: balanceador-nginx-ssl
+    build:
+      context: .
+      dockerfile: P4-anaiperez-nginx/DockerFileNginxP4
+    image: anaiperez-nginx-image:p4
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./P4-anaiperez-nginx/anaiperez-nginx-ssl.conf:/etc/nginx/conf:ro
+      - ./P4-anaiperez-certificados:/etc/nginx/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.50
+    depends_on:
+      - web1
+      - web2
+      - web3
+      - web4
+      - web5
+      - web6
+      - web7
+      - web8
+      
+  # --- SERVIDORES APACHE ---
+  web1:
+    container_name: web1
+    build:
+      context: .
+      dockerfile: P4-anaiperez-apache/DockerFileApacheP4
+    image: anaiperez-apache-image:p4
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./P4-anaiperez-apache/web_anaiperez:/var/www/html
+      - ./P4-anaiperez-certificados:/etc/apache2/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.2
+      red_servicios:
+        ipv4_address: 192.168.20.2
+    hostname: web1
+
+  web2:
+    container_name: web2
+    build:
+      context: .
+      dockerfile: P4-anaiperez-apache/DockerFileApacheP4
+    image: anaiperez-apache-image:p4
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./P4-anaiperez-apache/web_anaiperez:/var/www/html
+      - ./P4-anaiperez-certificados:/etc/apache2/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.3
+      red_servicios:
+        ipv4_address: 192.168.20.3
+    hostname: web2
+
+  web3:
+    container_name: web3
+    build:
+      context: .
+      dockerfile: P4-anaiperez-apache/DockerFileApacheP4
+    image: anaiperez-apache-image:p4
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./P4-anaiperez-apache/web_anaiperez:/var/www/html
+      - ./P4-anaiperez-certificados:/etc/apache2/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.4
+      red_servicios:
+        ipv4_address: 192.168.20.4
+    hostname: web3
+
+  web4:
+    container_name: web4
+    build:
+      context: .
+      dockerfile: P4-anaiperez-apache/DockerFileApacheP4
+    image: anaiperez-apache-image:p4
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./P4-anaiperez-apache/web_anaiperez:/var/www/html
+      - ./P4-anaiperez-certificados:/etc/apache2/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.5
+      red_servicios:
+        ipv4_address: 192.168.20.5
+    hostname: web4
+
+  web5:
+    container_name: web5
+    build:
+      context: .
+      dockerfile: P4-anaiperez-apache/DockerFileApacheP4
+    image: anaiperez-apache-image:p4
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./P4-anaiperez-apache/web_anaiperez:/var/www/html
+      - ./P4-anaiperez-certificados:/etc/apache2/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.6
+      red_servicios:
+        ipv4_address: 192.168.20.6
+    hostname: web5
+
+  web6:
+    container_name: web6
+    build:
+      context: .
+      dockerfile: P4-anaiperez-apache/DockerFileApacheP4
+    image: anaiperez-apache-image:p4
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./P4-anaiperez-apache/web_anaiperez:/var/www/html
+      - ./P4-anaiperez-certificados:/etc/apache2/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.7
+      red_servicios:
+        ipv4_address: 192.168.20.7
+    hostname: web6
+
+  web7:
+    container_name: web7
+    build:
+      context: .
+      dockerfile: P4-anaiperez-apache/DockerFileApacheP4
+    image: anaiperez-apache-image:p4
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./P4-anaiperez-apache/web_anaiperez:/var/www/html
+      - ./P4-anaiperez-certificados:/etc/apache2/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.8
+      red_servicios:
+        ipv4_address: 192.168.20.8
+    hostname: web7
+
+  web8:
+    container_name: web8
+    build:
+      context: .
+      dockerfile: P4-anaiperez-apache/DockerFileApacheP4
+    image: anaiperez-apache-image:p4
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./P4-anaiperez-apache/web_anaiperez:/var/www/html
+      - ./P4-anaiperez-certificados:/etc/apache2/ssl:ro
+    networks:
+      red_web:
+        ipv4_address: 192.168.10.9
+      red_servicios:
+        ipv4_address: 192.168.20.9
+    hostname: web8
+
+
+
+# --- REDES EXTERNAS ---
+networks:
+  red_web:
+    external: true
+  red_servicios:
+    external: true

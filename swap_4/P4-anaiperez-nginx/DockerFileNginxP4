@@ -1,0 +1,24 @@
+FROM nginx:latest
+
+RUN mkdir -p /etc/nginx/ssl && \
+    apt-get update &&  \ 
+    apt-get install -y iptables && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY P4-anaiperez-certificados/certificado_anaiperez.crt /etc/nginx/ssl/certificado_anaiperez.crt
+COPY P4-anaiperez-certificados/certificado_anaiperez.key /etc/nginx/ssl/certificado_anaiperez.key
+
+COPY P4-anaiperez-nginx/anaiperez-nginx-ssl.conf /etc/nginx/nginx.conf
+
+
+COPY P4-anaiperez-nginx/anaiperez-iptables-nginx.sh /anaiperez-iptables-nginx.sh
+COPY P4-anaiperez-nginx/entrypoint-nginx.sh /entrypoint-nginx.sh
+
+
+RUN chmod +x /anaiperez-iptables-nginx.sh /entrypoint-nginx.sh
+
+EXPOSE 80
+EXPOSE 443
+
+ENTRYPOINT ["/entrypoint-nginx.sh"]
+CMD ["nginx", "-g", "daemon off;"]

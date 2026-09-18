@@ -1,0 +1,35 @@
+FROM anaiperez-apache-image:p3
+
+# 1. INSTALACIÓN DE IPTABLES 
+RUN apt-get update && apt-get install -y iptables
+
+# Tu configuración de SSL 
+RUN a2enmod ssl \
+    && a2ensite default-ssl \
+    && mkdir -p /etc/apache2/ssl
+
+COPY P4-anaiperez-certificados/certificado_anaiperez_bundle.crt /etc/apache2/ssl/certificado_anaiperez_bundle.crt
+COPY P4-anaiperez-certificados/certificado_anaiperez.key /etc/apache2/ssl/certificado_anaiperez.key
+
+RUN chmod 600 /etc/apache2/ssl/certificado_anaiperez.key
+RUN chmod 644 /etc/apache2/ssl/certificado_anaiperez_bundle.crt
+
+COPY P4-anaiperez-apache/anaiperez-apache-ssl.conf /etc/apache2/sites-available/anaiperez-apache-ssl.conf
+RUN a2ensite anaiperez-apache-ssl.conf && a2dissite default-ssl
+
+# 2. COPIAR SCRIPTS DE LA PARTE 1 Y 2 
+COPY P4-anaiperez-apache/P4-anaiperez-iptables-web/anaiperez-iptables-web.sh /anaiperez-iptables-web.sh
+COPY P4-anaiperez-apache/P4-anaiperez-iptables-web/entrypoint.sh /entrypoint.sh
+
+# 3. DAR PERMISOS DENTRO DEL CONTENEDOR
+RUN chmod +x /anaiperez-iptables-web.sh /entrypoint.sh
+
+EXPOSE 80
+EXPOSE 443
+
+# 4. CONFIGURAR EL ENTRYPOINT (Parte 2 del guion)
+# Esto hace que al arrancar se ejecuten las reglas de iptables
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Lanzamos Apache en primer plano para que el contenedor no se apague
+CMD ["apache2ctl", "-D", "FOREGROUND"]
